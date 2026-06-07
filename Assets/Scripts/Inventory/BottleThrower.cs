@@ -7,10 +7,13 @@ public class BottleThrower : MonoBehaviour
     [SerializeField] private GameObject bottlePrefab;
     [SerializeField] private Transform throwOrigin;
     [SerializeField] private Transform aimPoint;
+    [SerializeField] private ThrowAimIndicator throwAimIndicator;
     [SerializeField] private KeyCode throwKey = KeyCode.Mouse0;
+    [SerializeField] private bool throwOnKeyRelease = true;
     [SerializeField] private float throwForce = 14f;
     [SerializeField] private float upwardForce = 2f;
     [SerializeField] private float maxAimDistance = 25f;
+    [SerializeField] private float bottleDamage = 20f;
 
     private void Awake()
     {
@@ -23,11 +26,17 @@ public class BottleThrower : MonoBehaviour
         {
             throwOrigin = transform;
         }
+
+        if (throwAimIndicator == null)
+        {
+            throwAimIndicator = GetComponent<ThrowAimIndicator>();
+        }
     }
 
     private void Update()
     {
-        if (!Input.GetKeyDown(throwKey))
+        bool shouldThrow = throwOnKeyRelease ? Input.GetKeyUp(throwKey) : Input.GetKeyDown(throwKey);
+        if (!shouldThrow)
         {
             return;
         }
@@ -55,6 +64,8 @@ public class BottleThrower : MonoBehaviour
         }
 
         GameObject bottleInstance = Instantiate(bottlePrefab, throwOrigin.position, Quaternion.LookRotation(throwDirection));
+        AttachBottleCombatData(bottleInstance);
+
         if (bottleInstance.TryGetComponent<Rigidbody>(out Rigidbody rigidbody))
         {
             rigidbody.linearVelocity = Vector3.zero;
@@ -67,6 +78,11 @@ public class BottleThrower : MonoBehaviour
 
     private Vector3 GetTargetPoint()
     {
+        if (throwAimIndicator != null)
+        {
+            return throwAimIndicator.CurrentAimPoint;
+        }
+
         if (aimPoint != null)
         {
             return aimPoint.position;
@@ -79,5 +95,16 @@ public class BottleThrower : MonoBehaviour
         }
 
         return throwOrigin.position + throwOrigin.forward * maxAimDistance;
+    }
+
+    private void AttachBottleCombatData(GameObject bottleInstance)
+    {
+        BottleProjectile bottleProjectile = bottleInstance.GetComponent<BottleProjectile>();
+        if (bottleProjectile == null)
+        {
+            bottleProjectile = bottleInstance.AddComponent<BottleProjectile>();
+        }
+
+        bottleProjectile.SetDamage(bottleDamage);
     }
 }
