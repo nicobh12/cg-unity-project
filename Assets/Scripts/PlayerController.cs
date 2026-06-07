@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     public float rotationSpeed = 12f;
     public float gravity = -9.81f;
     public float backwardInputThreshold = -0.1f;
+    public float sprintMultiplier = 1.8f;
 
     Vector3 velocity;
 
@@ -42,8 +43,14 @@ public class PlayerController : MonoBehaviour
             moveDirection.Normalize();
         }
 
+        // SPRINT (Shift) - only when moving forward
+        bool isSprinting = (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) && z > 0.1f;
+        float currentSpeed = isSprinting ? speed * sprintMultiplier : speed;
+
+        animator.SetBool("isSprinting", isSprinting);
+
         // MOVE CHARACTER
-        controller.Move(moveDirection * speed * Time.deltaTime);
+        controller.Move(moveDirection * currentSpeed * Time.deltaTime);
 
         // ANIMATION (smooth value)
         float speedPercent = Mathf.Clamp01(input.magnitude);
