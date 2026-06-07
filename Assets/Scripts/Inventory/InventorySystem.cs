@@ -45,6 +45,39 @@ public class InventorySystem : MonoBehaviour
         return items.Exists(entry => entry.item == item);
     }
 
+    public ItemDefinition GetItemById(string itemId)
+    {
+        if (string.IsNullOrWhiteSpace(itemId))
+        {
+            return null;
+        }
+
+        InventoryEntry entry = items.Find(candidate => candidate.item != null && candidate.item.itemId == itemId);
+        return entry != null ? entry.item : null;
+    }
+
+    public bool ConsumeItem(string itemId, int quantity = 1)
+    {
+        if (string.IsNullOrWhiteSpace(itemId) || quantity <= 0)
+        {
+            return false;
+        }
+
+        InventoryEntry entry = items.Find(candidate => candidate.item != null && candidate.item.itemId == itemId);
+        if (entry == null || entry.quantity < quantity)
+        {
+            return false;
+        }
+
+        entry.quantity -= quantity;
+        if (entry.quantity <= 0)
+        {
+            items.Remove(entry);
+        }
+
+        return true;
+    }
+
     public int GetQuantity(ItemDefinition item)
     {
         InventoryEntry entry = items.Find(candidate => candidate.item == item);
