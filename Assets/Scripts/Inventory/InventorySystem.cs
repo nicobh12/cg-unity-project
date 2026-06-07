@@ -83,4 +83,44 @@ public class InventorySystem : MonoBehaviour
         InventoryEntry entry = items.Find(candidate => candidate.item == item);
         return entry != null ? entry.quantity : 0;
     }
+
+    public List<InventoryEntry> CreateSnapshot()
+    {
+        List<InventoryEntry> snapshot = new List<InventoryEntry>();
+
+        foreach (InventoryEntry entry in items)
+        {
+            if (entry == null || entry.item == null || entry.quantity <= 0)
+            {
+                continue;
+            }
+
+            snapshot.Add(new InventoryEntry
+            {
+                item = entry.item,
+                quantity = entry.quantity
+            });
+        }
+
+        return snapshot;
+    }
+
+    public void LoadSnapshot(List<InventoryEntry> snapshot)
+    {
+        items.Clear();
+        if (snapshot == null)
+        {
+            return;
+        }
+
+        foreach (InventoryEntry entry in snapshot)
+        {
+            if (entry == null || entry.item == null || entry.quantity <= 0)
+            {
+                continue;
+            }
+
+            AddItem(entry.item, entry.quantity);
+        }
+    }
 }

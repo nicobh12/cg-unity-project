@@ -4,11 +4,8 @@ using UnityEngine;
 public class PlayerWaveDamageReceiver : MonoBehaviour
 {
     [SerializeField] private float regularWaveDamage = 10f;
-    [SerializeField] private float specialWaveDamage = 10f;
-    [SerializeField] private int maxSpecialHitsBeforeDefeat = 3;
 
     private Health health;
-    private int specialWaveHits;
 
     private void Awake()
     {
@@ -17,12 +14,12 @@ public class PlayerWaveDamageReceiver : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        TryHandleWaveHit(other.GetComponent<MusicWaveProjectile>());
+        TryHandleWaveHit(other.GetComponentInParent<MusicWaveProjectile>());
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        TryHandleWaveHit(collision.gameObject.GetComponent<MusicWaveProjectile>());
+        TryHandleWaveHit(collision.gameObject.GetComponentInParent<MusicWaveProjectile>());
     }
 
     private void TryHandleWaveHit(MusicWaveProjectile wave)
@@ -34,12 +31,11 @@ public class PlayerWaveDamageReceiver : MonoBehaviour
 
         if (wave.IsSpecialWave)
         {
-            specialWaveHits += 1;
-            health.ApplyDamage(specialWaveDamage);
-
-            if (specialWaveHits > maxSpecialHitsBeforeDefeat)
+            Debug.Log("PlayerWaveDamageReceiver: Hit by special wave");
+            Debug.Log("GameManager.Instance: " + (GameManager.Instance != null ? "Exists" : "Null"));
+            if (GameManager.Instance != null)
             {
-                health.Deplete();
+                GameManager.Instance.StartDDRChallengeFromSpecialWave();
             }
         }
         else

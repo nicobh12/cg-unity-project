@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     public float gravity = -9.81f;
     public float backwardInputThreshold = -0.1f;
     public float sprintMultiplier = 1.8f;
+    public string isInDDRParameterName = "IsInDDR";
 
     Vector3 velocity;
 
@@ -20,11 +21,31 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.Instance != null && GameManager.Instance.IsDDRActive)
+        {
+            velocity = Vector3.zero;
+
+            if (animator != null)
+            {
+                animator.SetBool(isInDDRParameterName, true);
+                animator.SetFloat("Speed", 0f);
+                animator.SetBool("isSprinting", false);
+                animator.SetBool("IsWalkingBackward", false);
+            }
+
+            return;
+        }
+
         // INPUT
         float x = Input.GetAxis("Horizontal"); // A/D
         float z = Input.GetAxis("Vertical");   // W/S
 
         Vector2 input = new Vector2(x, z);
+
+        if (animator != null)
+        {
+            animator.SetBool(isInDDRParameterName, false);
+        }
 
         // PLAYER DIRECTION (flattened)
         Vector3 moveForward = transform.forward;

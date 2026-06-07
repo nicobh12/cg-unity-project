@@ -1,0 +1,16 @@
+{
+  "songId": "song_c",
+  "audioFileName": "song_c",
+  "bpm": 110.0,
+  "startOffsetSeconds": 0.05,
+  "steps": [
+    { "beat": 1.0, "key": "Up",    "animationValue": 3 },
+    { "beat": 2.0, "key": "Right", "animationValue": 4 },
+    { "beat": 3.0, "key": "Down",  "animationValue": 2 },
+    { "beat": 4.0, "key": "Left",  "animationValue": 1 },
+    { "beat": 5.0, "key": "Up",    "animationValue": 3 },
+    { "beat": 5.5, "key": "Right", "animationValue": 4 },
+    { "beat": 6.0, "key": "Left",  "animationValue": 1 },
+    { "beat": 7.0, "key": "Down",  "animationValue": 2 }
+  ]
+}

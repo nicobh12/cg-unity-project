@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1282626856735245518}
   - component: {fileID: 8676205430954781257}
   - component: {fileID: 3217682707716522920}
+  - component: {fileID: 415762789458085819}
   m_Layer: 0
   m_Name: DJ Ghost
   m_TagString: Untagged
@@ -86,6 +87,25 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &415762789458085819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2868420703951832473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3935575218794dd45932d48acf5f1356, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DJGhostFloatMotion
+  localFloatOffset: {x: 0, y: 0.35, z: 0}
+  floatAmplitude: 0.18
+  floatFrequency: 1.4
+  swayAmplitude: 0.12
+  swayFrequency: 0.9
+  rotationAmplitude: 6
+  rotationFrequency: 0.75
 --- !u!1001 &519861254029107868
 PrefabInstance:
   m_ObjectHideFlags: 0

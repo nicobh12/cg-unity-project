@@ -1,0 +1,16 @@
+{
+  "songId": "song_b",
+  "audioFileName": "song_b",
+  "bpm": 132.0,
+  "startOffsetSeconds": 0.1,
+  "steps": [
+    { "beat": 1.0, "key": "Down",  "animationValue": 2 },
+    { "beat": 1.5, "key": "Left",  "animationValue": 1 },
+    { "beat": 2.0, "key": "Up",    "animationValue": 3 },
+    { "beat": 3.0, "key": "Right", "animationValue": 4 },
+    { "beat": 4.0, "key": "Left",  "animationValue": 1 },
+    { "beat": 5.0, "key": "Down",  "animationValue": 2 },
+    { "beat": 6.0, "key": "Up",    "animationValue": 3 },
+    { "beat": 7.0, "key": "Right", "animationValue": 4 }
+  ]
+}
