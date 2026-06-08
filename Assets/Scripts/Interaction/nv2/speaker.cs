@@ -7,6 +7,7 @@ public class Speaker : MonoBehaviour, IInteractable
     private bool isBroken = false;
 
     public bool IsBroken => isBroken;
+    public bool CanInteract => !isBroken;
 
     public void Interact(InventorySystem inventorySystem)
     {
@@ -17,11 +18,13 @@ public class Speaker : MonoBehaviour, IInteractable
     }
 
     private void BreakSpeaker()
-    {
-        isBroken = true;
+{
+    isBroken = true;
 
-        SpeakerManager.Instance.UpdateVolume();
-    }
+    SpeakerManager.Instance.UpdateVolume();
+
+    SpeakerManager.Instance.CheckAllSpeakersBroken();
+}
 
     public void Reactivate()
     {

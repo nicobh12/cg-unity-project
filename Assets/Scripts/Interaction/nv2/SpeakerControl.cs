@@ -2,14 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class SpeakerManager : MonoBehaviour
 {
+    public GhostMessageUI ghostUI;
     public static SpeakerManager Instance;
+    private bool speakersCompleted = false;
+
+    public bool SpeakersCompleted => speakersCompleted;
 
     public AudioSource backgroundMusic;
     public List<Speaker> speakers;
 
-    [SerializeField] private float reactivateTime = 20f;
+    [SerializeField] private float reactivateTime = 35f;
 
     private void Awake()
     {
@@ -20,6 +25,30 @@ public class SpeakerManager : MonoBehaviour
     {
         StartCoroutine(ReactivationLoop());
     }
+
+    public void CheckAllSpeakersBroken()
+{
+    if (speakersCompleted)
+        return;
+
+    foreach (Speaker s in speakers)
+    {
+        if (!s.IsBroken)
+            return;
+    }
+
+    speakersCompleted = true;
+
+    Debug.Log("Todos los parlantes apagados.");
+
+    if (ghostUI != null)
+    {
+        ghostUI.ShowMessage(
+            "¡Felicidades! Has apagado todos los parlantes",
+            4f
+        );
+    }
+}
 
     public void UpdateVolume()
     {
@@ -35,11 +64,28 @@ public class SpeakerManager : MonoBehaviour
             backgroundMusic.volume = (float)active / speakers.Count;
     }
 
+    bool AllSpeakersBroken()
+{
+    foreach (Speaker s in speakers)
+    {
+        if (!s.IsBroken)
+            return false;
+    }
+
+    return true;
+}
+
     private IEnumerator ReactivationLoop()
     {
         while (true)
         {
             yield return new WaitForSeconds(reactivateTime);
+
+            if (AllSpeakersBroken())
+            {
+                Debug.Log("Todos los speakers apagados. Sistema de reactivación detenido.");
+                yield break;
+            }
 
             List<Speaker> broken = new List<Speaker>();
 
@@ -53,6 +99,11 @@ public class SpeakerManager : MonoBehaviour
             {
                 int randomIndex = Random.Range(0, broken.Count);
                 broken[randomIndex].Reactivate();
+
+                if (ghostUI != null)
+                {
+                    ghostUI.ShowMessage("¡Oh no! Un fantasma encendió un parlante");
+                }
 
                 UpdateVolume();
             }
