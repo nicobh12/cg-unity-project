@@ -1,5 +1,4 @@
 using System.Collections;
-using Cinemachine;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -12,10 +11,8 @@ public class NV3FinaleSequence : MonoBehaviour
     [SerializeField] private GameObject ghostVisualRoot;
 
     [Header("Cameras")]
-    [SerializeField] private CinemachineCamera gameplayCamera;
-    [SerializeField] private CinemachineCamera ghostCamera;
-    [SerializeField] private int gameplayCameraPriority = 10;
-    [SerializeField] private int ghostCameraPriority = 30;
+    [SerializeField] private Camera gameplayCamera;
+    [SerializeField] private Camera ghostCamera;
 
     [Header("Sequence")]
     [SerializeField] private float revealDelay = 2f;
@@ -30,6 +27,11 @@ public class NV3FinaleSequence : MonoBehaviour
         if (djBossHealth == null)
         {
             djBossHealth = FindAnyObjectByType<Health>();
+        }
+
+        if (ghostCamera != null)
+        {
+            ghostCamera.gameObject.SetActive(false);
         }
     }
 
@@ -95,14 +97,15 @@ public class NV3FinaleSequence : MonoBehaviour
             bossAttack.enabled = false;
         }
 
-        if (ghostCamera != null)
-        {
-            ghostCamera.Priority = ghostCameraPriority;
-        }
-
+        // Cambiar a cámara final
         if (gameplayCamera != null)
         {
-            gameplayCamera.Priority = gameplayCameraPriority;
+            gameplayCamera.gameObject.SetActive(false);
+        }
+
+        if (ghostCamera != null)
+        {
+            ghostCamera.gameObject.SetActive(true);
         }
 
         if (ghostVisualRoot != null)
@@ -111,13 +114,13 @@ public class NV3FinaleSequence : MonoBehaviour
         }
 
         yield return new WaitForSeconds(revealDelay);
-        yield return new WaitForSeconds(vanishDelay);
 
         if (ghostVisualRoot != null)
         {
             ghostVisualRoot.SetActive(false);
         }
 
+        yield return new WaitForSeconds(vanishDelay);
         yield return new WaitForSeconds(creditsDelay);
 
         if (!string.IsNullOrWhiteSpace(creditsSceneName))
