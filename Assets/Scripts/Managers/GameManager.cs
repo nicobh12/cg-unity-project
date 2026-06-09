@@ -2,11 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
+using UnityEngine.Playables;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     private const string DDRTutorialSeenKey = "DDRTutorialSeen";
+
+    [Header("Level 1 - Puzzle")]
+    public UIDocument uiDocument;
+    public PlayableDirector timelineDirector;
+
+    public bool vioPuerta = false;
+    public bool vioMesita = false;
+
+    public string p1 = "_____";
+    public string p2 = "_____";
+    public string p3 = "_____";
+
+    public GameObject seguirJugador;
+    public GameObject player;
+    public GameObject key;
+
+    private bool find1 = false;
+    private bool find2 = false;
+    private bool find3 = false;
+
+    public bool keyFound = false;
 
     [Header("Persistent Stats")]
     [SerializeField] private float savedPlayerMaxHealth = 100f;
@@ -77,7 +100,20 @@ public class GameManager : MonoBehaviour
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
         }
+
+        if (timelineDirector != null)
+        {
+            timelineDirector.stopped -= OnTimelineFinished;
+        }
     }
+
+    private void OnEnable()
+{
+    if (timelineDirector != null)
+    {
+        timelineDirector.stopped += OnTimelineFinished;
+    }
+}
 
     private void LateUpdate()
     {
@@ -260,6 +296,55 @@ public class GameManager : MonoBehaviour
         {
             currentBossHealth.SetMaxHealth(savedBossMaxHealth, false);
             currentBossHealth.SetCurrentHealth(savedBossHealth);
+        }
+    }
+
+        private void OnTimelineFinished(PlayableDirector director)
+    {
+        if (seguirJugador != null)
+        {
+            seguirJugador.SetActive(true);
+        }
+
+        if (player != null)
+        {
+            player.SetActive(true);
+        }
+
+        Debug.Log("Timeline terminado");
+    }
+
+    public void EncontrarPista1()
+    {
+        p1 = "5";
+        find1 = true;
+        ActivarLlave();
+    }
+
+    public void EncontrarPista2()
+    {
+        p2 = "1";
+        find2 = true;
+        ActivarLlave();
+    }
+
+    public void EncontrarPista3()
+    {
+        p3 = "9";
+        find3 = true;
+        ActivarLlave();
+    }
+
+    private void ActivarLlave()
+    {
+        if (find1 && find2 && find3)
+        {
+            keyFound = true;
+
+            if (key != null)
+            {
+                key.SetActive(true);
+            }
         }
     }
 }

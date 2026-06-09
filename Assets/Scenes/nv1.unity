@@ -1121,7 +1121,7 @@ Canvas:
   m_GameObject: {fileID: 322624094}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -1796,20 +1796,36 @@ MonoBehaviour:
   m_GameObject: {fileID: 641286524}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6947fb630a59a8d459e47f22b5f64db0, type: 3}
+  m_Script: {fileID: 11500000, guid: 92cb365c85f0fa14ebf28e5e7c88c179, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   uiDocument: {fileID: 145665056}
-  timelineDirector: {fileID: 684727327}
+  timelineDirector: {fileID: 951932773}
   vioPuerta: 0
   vioMesita: 0
-  p1: ______
-  p2: ______
-  p3: ______
-  seguirJugador: {fileID: 1808021660}
-  player: {fileID: 1018160400}
+  p1: _____
+  p2: _____
+  p3: _____
+  seguirJugador: {fileID: 684727320}
+  player: {fileID: 99945111}
   key: {fileID: 1405073411}
   keyFound: 0
+  savedPlayerMaxHealth: 100
+  savedPlayerHealth: 100
+  savedBossMaxHealth: 100
+  savedBossHealth: 100
+  partyOMeter: 0
+  maxPartyOMeter: 100
+  ddrSceneName: ddr
+  ddrReturnSceneName: nv3
+  ddrFailMissThreshold: 0.3
+  ddrFailHealthPenalty: 20
+  ddrFailPartyOMeterGain: 15
+  ddrEntries: 0
+  maxDDREntriesBeforeDeath: 3
+  playerTag: Player
+  bossTag: Boss
+  inventorySnapshot: []
 --- !u!4 &641286526
 Transform:
   m_ObjectHideFlags: 0
@@ -5707,11 +5723,6 @@ BoxCollider:
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5306dd2449a655740acb6ec5253ccc84, type: 3}
   m_PrefabInstance: {fileID: 442291958}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1808021660 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2778623570397316622, guid: f6758c10b68b6294785fa0051e1b5172, type: 3}
-  m_PrefabInstance: {fileID: 143783794}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1828291463
 PrefabInstance:

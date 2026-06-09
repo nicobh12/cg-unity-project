@@ -661,7 +661,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 16819164}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b28c8550778875a4ab3d0cd0869dbf3d, type: 3}
+  m_Script: {fileID: 11500000, guid: df78edf4fb9b5134c99acf6b0e92fd9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Speaker
   music: {fileID: 1915446492}
@@ -4789,7 +4789,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 253990303}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76dc30400e7ca1c4bb571fb887c61330, type: 3}
+  m_Script: {fileID: 11500000, guid: 8ade0b0ac08933141bf144507202ae38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InteractionUI
   detector: {fileID: 1879583600}
@@ -4980,7 +4980,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 258324570}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b28c8550778875a4ab3d0cd0869dbf3d, type: 3}
+  m_Script: {fileID: 11500000, guid: df78edf4fb9b5134c99acf6b0e92fd9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Speaker
   music: {fileID: 1915446492}
@@ -15039,7 +15039,12 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.1870388, y: 2.9578176, z: 0.7946719}
   m_Center: {x: 0.00036782026, y: 1.4789088, z: 0.00016082823}
---- !u!114 &681841310
+--- !u!4 &681841313 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f851354166d53f340b89ffeee3116035, type: 3}
+  m_PrefabInstance: {fileID: 727976072}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &681841314
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -15048,15 +15053,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 681841307}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b28c8550778875a4ab3d0cd0869dbf3d, type: 3}
+  m_Script: {fileID: 11500000, guid: df78edf4fb9b5134c99acf6b0e92fd9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Speaker
   music: {fileID: 1915446492}
---- !u!4 &681841313 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f851354166d53f340b89ffeee3116035, type: 3}
-  m_PrefabInstance: {fileID: 727976072}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &682225224
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16203,13 +16203,13 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f851354166d53f340b89ffeee3116035, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 681841310}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f851354166d53f340b89ffeee3116035, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 681841309}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f851354166d53f340b89ffeee3116035, type: 3}
       insertIndex: -1
       addedObject: {fileID: 681841308}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f851354166d53f340b89ffeee3116035, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 681841314}
   m_SourcePrefab: {fileID: 100100000, guid: f851354166d53f340b89ffeee3116035, type: 3}
 --- !u!4 &730974238 stripped
 Transform:
@@ -21871,14 +21871,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1033582787}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d74a88e23a06dcf428d4b3a93355c40e, type: 3}
+  m_Script: {fileID: 11500000, guid: e72be9cc66734b74ba473e64a1ad9867, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpeakerManager
   ghostUI: {fileID: 1198660522}
   backgroundMusic: {fileID: 1915446492}
   speakers:
   - {fileID: 258324573}
-  - {fileID: 681841310}
+  - {fileID: 681841314}
   - {fileID: 16819167}
   - {fileID: 1698288283}
   - {fileID: 1982478735}
@@ -34910,7 +34910,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1698288280}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b28c8550778875a4ab3d0cd0869dbf3d, type: 3}
+  m_Script: {fileID: 11500000, guid: df78edf4fb9b5134c99acf6b0e92fd9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Speaker
   music: {fileID: 1915446492}
@@ -40071,7 +40071,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1982478732}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b28c8550778875a4ab3d0cd0869dbf3d, type: 3}
+  m_Script: {fileID: 11500000, guid: df78edf4fb9b5134c99acf6b0e92fd9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Speaker
   music: {fileID: 1915446492}

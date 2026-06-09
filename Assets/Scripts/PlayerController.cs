@@ -47,15 +47,9 @@ public class PlayerController : MonoBehaviour
         }
 
         // INPUT
-        float x = Input.GetAxis("Horizontal"); // A/D
-        float z = Input.GetAxis("Vertical");   // W/S
+        float x = puedeCaminar ? Input.GetAxis("Horizontal") : 0f;
+        float z = puedeCaminar ? Input.GetAxis("Vertical") : 0f;
         
-        if(puedeCaminar)
-        {
-            float x = Input.GetAxis("Horizontal"); // A/D
-            float z = Input.GetAxis("Vertical");   // W/S
-        }
-
         Vector2 input = new Vector2(x, z);
 
             // PLAYER DIRECTION (flattened)

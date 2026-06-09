@@ -58,8 +58,13 @@ public class SpeakerManager : MonoBehaviour
                 active++;
         }
 
-        if (speakers.Count > 0)
-            backgroundMusic.volume = (float)active / speakers.Count;
+        if (speakers.Count > 0){
+        
+            float minVolume = 0.20f;
+
+            backgroundMusic.volume =
+                Mathf.Lerp(minVolume, 1f, (float)active / speakers.Count);
+        }
     }
 
     bool AllSpeakersBroken()
