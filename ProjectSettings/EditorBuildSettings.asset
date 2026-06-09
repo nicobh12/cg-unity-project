@@ -18,5 +18,14 @@ m_Scenes:
   - enabled: 1
     path: Assets/Scenes/ddr.unity
     guid: d5cf8090f3800e6468999989a545e022
+
+  - enabled: 1
+    path: Assets/Scenes/credits.unity
+    guid: 664e6dacafc55ff49895c0774d233af9
+
+  - enabled: 1
+    path: Assets/Scenes/Menu.unity
+    guid: deb052e0bed13034295bffeb9e1d49ba
+    
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
