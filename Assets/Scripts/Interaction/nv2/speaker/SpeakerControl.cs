@@ -39,8 +39,6 @@ public class SpeakerManager : MonoBehaviour
 
     speakersCompleted = true;
 
-    Debug.Log("Todos los parlantes apagados.");
-
     if (ghostUI != null)
     {
         ghostUI.ShowMessage(
@@ -83,7 +81,6 @@ public class SpeakerManager : MonoBehaviour
 
             if (AllSpeakersBroken())
             {
-                Debug.Log("Todos los speakers apagados. Sistema de reactivación detenido.");
                 yield break;
             }
 

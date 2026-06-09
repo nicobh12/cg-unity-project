@@ -29,7 +29,6 @@ public class LightController : MonoBehaviour
 
         if (AllLightsOn())
         {
-            Debug.Log("Todas las luces encendidas. Sistema de apagado detenido.");
             yield break;
         }
 
@@ -88,8 +87,6 @@ private void Awake()
     }
 
     lightsCompleted = true;
-
-    Debug.Log("Todas las luces encendidas.");
 
     if (ghostUI != null)
     {
