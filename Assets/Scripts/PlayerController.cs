@@ -45,6 +45,10 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool(isInDDRParameterName, false);
             }
         }
+
+        // INPUT
+        float x = Input.GetAxis("Horizontal"); // A/D
+        float z = Input.GetAxis("Vertical");   // W/S
         
         if(puedeCaminar)
         {
