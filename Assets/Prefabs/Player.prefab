@@ -95,8 +95,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3537180183485056379}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.061628442, y: -0.70441616, z: 0.061628453, w: 0.7044159}
-  m_LocalPosition: {x: 4.71, y: 2.1599998, z: -0.99999964}
+  m_LocalRotation: {x: 0.08715578, y: 0.000000008385097, z: -7.336012e-10, w: 0.9961947}
+  m_LocalPosition: {x: 0, y: 1.095735, z: -1.6257349}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -424,11 +424,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5920591687451731157, guid: f1fc44a3fcf24484a9a8f638b6a85d20, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.06
+      value: 1.095735
       objectReference: {fileID: 0}
     - target: {fileID: 5920591687451731157, guid: f1fc44a3fcf24484a9a8f638b6a85d20, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.5900002
+      value: -1.6257349
       objectReference: {fileID: 0}
     - target: {fileID: 5920591687451731157, guid: f1fc44a3fcf24484a9a8f638b6a85d20, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1288,6 +1288,7 @@ MonoBehaviour:
   gravity: -9.81
   backwardInputThreshold: -0.1
   sprintMultiplier: 1.8
+  isInDDRParameterName: IsInDDR
 --- !u!114 &1385023607765338716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1360,7 +1361,19 @@ MonoBehaviour:
   currentHealth: 100
   onHealthChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 11500000, guid: 92cb365c85f0fa14ebf28e5e7c88c179, type: 3}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onDied:
     m_PersistentCalls:
       m_Calls: []
@@ -1377,8 +1390,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerWaveDamageReceiver
   regularWaveDamage: 10
-  specialWaveDamage: 10
-  maxSpecialHitsBeforeDefeat: 3
 --- !u!4 &6742784442110900209 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 26823783267a2e245acf725f5d160da6, type: 3}

@@ -25,14 +25,13 @@ public class PlayerWaveDamageReceiver : MonoBehaviour
     private void TryHandleWaveHit(MusicWaveProjectile wave)
     {
         if (wave == null || health == null || health.IsDead)
-        {
             return;
-        }
+
+        if (GameManager.Instance != null && GameManager.Instance.CombatEnded)
+            return;
 
         if (wave.IsSpecialWave)
         {
-            Debug.Log("PlayerWaveDamageReceiver: Hit by special wave");
-            Debug.Log("GameManager.Instance: " + (GameManager.Instance != null ? "Exists" : "Null"));
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.StartDDRChallengeFromSpecialWave();

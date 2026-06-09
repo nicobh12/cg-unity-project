@@ -58,9 +58,24 @@ public class InteractionProximityDetector : MonoBehaviour
             inventorySystem = GetComponentInParent<InventorySystem>();
         }
 
+        List<IInteractable> invalidInteractables = new List<IInteractable>();
+
         foreach (IInteractable interactable in nearbyInteractables)
         {
+            MonoBehaviour behaviour = interactable as MonoBehaviour;
+
+            if (behaviour == null)
+            {
+                invalidInteractables.Add(interactable);
+                continue;
+            }
+
             interactable.Interact(inventorySystem);
+        }
+
+        foreach (IInteractable invalid in invalidInteractables)
+        {
+            nearbyInteractables.Remove(invalid);
         }
     }
 }

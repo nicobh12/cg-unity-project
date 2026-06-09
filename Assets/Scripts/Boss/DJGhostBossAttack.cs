@@ -53,13 +53,13 @@ public class DJGhostBossAttack : MonoBehaviour
 
     private IEnumerator AttackLoop()
     {
-        while (true)
-        {
-            float waitTime = Random.Range(minAttackDelay, maxAttackDelay);
-            yield return new WaitForSeconds(waitTime);
+            while (GameManager.Instance == null || !GameManager.Instance.CombatEnded)
+            {
+                float waitTime = Random.Range(minAttackDelay, maxAttackDelay);
+                yield return new WaitForSeconds(waitTime);
 
-            PerformRandomAttack();
-        }
+                PerformRandomAttack();
+            }
     }
 
     private void PerformRandomAttack()

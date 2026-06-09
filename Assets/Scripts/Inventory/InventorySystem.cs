@@ -105,6 +105,20 @@ public class InventorySystem : MonoBehaviour
         return snapshot;
     }
 
+    public int GetItemQuantity(string itemId)
+    {
+        if (string.IsNullOrWhiteSpace(itemId))
+        {
+            return 0;
+        }
+
+        InventoryEntry entry = items.Find(e =>
+            e.item != null && e.item.itemId == itemId
+        );
+
+        return entry != null ? entry.quantity : 0;
+    }
+
     public void LoadSnapshot(List<InventoryEntry> snapshot)
     {
         items.Clear();

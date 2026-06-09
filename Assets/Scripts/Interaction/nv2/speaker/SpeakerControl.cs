@@ -10,8 +10,6 @@ public class SpeakerManager : MonoBehaviour
     private bool speakersCompleted = false;
 
     public bool SpeakersCompleted => speakersCompleted;
-
-    public AudioSource backgroundMusic;
     public List<Speaker> speakers;
 
     [SerializeField] private float reactivateTime = 35f;
@@ -62,8 +60,9 @@ public class SpeakerManager : MonoBehaviour
         
             float minVolume = 0.20f;
 
-            backgroundMusic.volume =
-                Mathf.Lerp(minVolume, 1f, (float)active / speakers.Count);
+            MusicManager.Instance.SetVolume(
+                Mathf.Lerp(minVolume, 1f, (float)active / speakers.Count)
+            );
         }
     }
 

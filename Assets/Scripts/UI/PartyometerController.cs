@@ -7,8 +7,10 @@ public class PartyometerController : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private Slider partyometerSlider;
-    [SerializeField] private LightController lightController;
-    [SerializeField] private SpeakerManager speakerManager;
+
+    // ❌ ya no se asignan en Inspector (pueden no existir en escena)
+    private LightController lightController;
+    private SpeakerManager speakerManager;
 
     [Header("Values")]
     [SerializeField] private float fullValue = 100f;
@@ -27,9 +29,31 @@ public class PartyometerController : MonoBehaviour
         Instance = this;
     }
 
+    private void OnEnable()
+    {
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
     private void Start()
     {
+        BindSceneObjects();
         ApplyValue(fullValue);
+    }
+
+    private void OnSceneLoaded(UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode)
+    {
+        BindSceneObjects();
+    }
+
+    private void BindSceneObjects()
+    {
+        lightController = FindFirstObjectByType<LightController>();
+        speakerManager = FindFirstObjectByType<SpeakerManager>();
     }
 
     private void Update()
@@ -60,46 +84,36 @@ public class PartyometerController : MonoBehaviour
         int totalTargets = 0;
         int completedTargets = 0;
 
+        // 💡 LIGHTS
         if (lightController != null && lightController.lights != null)
         {
             foreach (LightSwitch lightSwitch in lightController.lights)
             {
-                if (lightSwitch == null)
-                {
-                    continue;
-                }
+                if (lightSwitch == null) continue;
 
                 totalTargets++;
 
                 if (lightSwitch.IsOn)
-                {
                     completedTargets++;
-                }
             }
         }
 
+        // 🔊 SPEAKERS
         if (speakerManager != null && speakerManager.speakers != null)
         {
             foreach (Speaker speaker in speakerManager.speakers)
             {
-                if (speaker == null)
-                {
-                    continue;
-                }
+                if (speaker == null) continue;
 
                 totalTargets++;
 
                 if (speaker.IsBroken)
-                {
                     completedTargets++;
-                }
             }
         }
 
         if (totalTargets <= 0)
-        {
             return fullValue;
-        }
 
         float progress = Mathf.Clamp01((float)completedTargets / totalTargets);
         return Mathf.Lerp(fullValue, completedValue, progress);

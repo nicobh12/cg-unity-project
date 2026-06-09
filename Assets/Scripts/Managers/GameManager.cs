@@ -79,6 +79,9 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        PlayerPrefs.DeleteKey("DDRTutorialSeen");
+        PlayerPrefs.Save();
+
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -144,6 +147,14 @@ public class GameManager : MonoBehaviour
 
     public void CapturePlayerState()
     {
+        if (currentPlayerHealth != null)
+        {
+            savedPlayerMaxHealth = currentPlayerHealth.MaxHealth;
+            savedPlayerHealth = currentPlayerHealth.CurrentHealth;
+
+            Debug.Log("GUARDANDO VIDA: " + savedPlayerHealth);
+        }
+
         if (currentPlayerHealth != null)
         {
             savedPlayerMaxHealth = currentPlayerHealth.MaxHealth;
@@ -273,6 +284,14 @@ public class GameManager : MonoBehaviour
         currentBossHealth = null;
 
         GameObject playerObject = GameObject.FindGameObjectWithTag(playerTag);
+
+        Debug.Log("PLAYER ENCONTRADO: " + playerObject.name);
+
+        currentPlayerHealth = playerObject.GetComponent<Health>();
+
+        Debug.Log("HEALTH COMPONENT EN: " + currentPlayerHealth.gameObject.name);
+        Debug.Log("VIDA ACTUAL LEIDA: " + currentPlayerHealth.CurrentHealth);
+
         if (playerObject != null)
         {
             currentPlayerHealth = playerObject.GetComponent<Health>();
@@ -295,9 +314,8 @@ public class GameManager : MonoBehaviour
             currentBossHealth = bossObject.GetComponent<Health>();
         }
 
-        if (!hasInitializedFromScene && (currentPlayerHealth != null || currentPlayerInventory != null || currentBossHealth != null))
+        if (!hasInitializedFromScene)
         {
-            CapturePlayerState();
             hasInitializedFromScene = true;
         }
 
@@ -316,6 +334,14 @@ public class GameManager : MonoBehaviour
 
     private void ApplyStateToCurrentPlayer()
     {
+        if (currentPlayerHealth != null)
+        {
+            Debug.Log("APLICANDO VIDA: " + savedPlayerHealth);
+
+            currentPlayerHealth.SetMaxHealth(savedPlayerMaxHealth, false);
+            currentPlayerHealth.SetCurrentHealth(savedPlayerHealth);
+        }
+
         if (currentPlayerHealth != null)
         {
             currentPlayerHealth.SetMaxHealth(savedPlayerMaxHealth, false);
@@ -399,5 +425,12 @@ public class GameManager : MonoBehaviour
                 key.SetActive(true);
             }
         }
+    }
+
+    public bool CombatEnded { get; private set; }
+
+    public void EndCombat()
+    {
+        CombatEnded = true;
     }
 }

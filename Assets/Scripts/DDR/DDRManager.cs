@@ -37,6 +37,10 @@ public class DDRManager : MonoBehaviour
     [SerializeField] private bool allowKeyboardToCloseTutorial = true;
     [SerializeField] private KeyCode tutorialContinueKey = KeyCode.Return;
 
+    //load current manager volume to restore later
+    private float managerVolume;
+
+
     private static readonly KeyCode[] StepKeys =
     {
         KeyCode.LeftArrow,
@@ -78,6 +82,12 @@ public class DDRManager : MonoBehaviour
     private void Start()
     {
         ActivateDDRCamera();
+
+        //stop music manager music if it's playing
+        if (MusicManager.Instance != null)        {
+            managerVolume = MusicManager.Instance.GetVolume();
+            MusicManager.Instance.SetVolume(0f);
+        }
 
         if (ShouldShowFirstEntryTutorial())
         {
@@ -404,13 +414,16 @@ public class DDRManager : MonoBehaviour
         returningToScene = true;
         yield return new WaitForSeconds(postSongDelaySeconds);
 
+        if (MusicManager.Instance != null)
+        {
+            MusicManager.Instance.SetVolume(managerVolume);
+        }
+
         if (GameManager.Instance != null)
         {
             GameManager.Instance.CompleteDDRChallenge(missRatio);
             yield break;
         }
-
-        SceneManager.LoadScene("nv3");
     }
 
     private KeyCode ParseStepKey(string keyName)

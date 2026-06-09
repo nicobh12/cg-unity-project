@@ -8,25 +8,22 @@ public class PermanentHUDManager : MonoBehaviour
 
     [Header("Roots")]
     [SerializeField] private GameObject hudRoot;
-    [SerializeField] private GameObject stopMenuRoot;
     [SerializeField] private GameObject gameOverRoot;
     [SerializeField] private GameObject healthRoot;
-    [SerializeField] private GameObject inventoryRoot;
 
     [Header("Bars")]
     [SerializeField] private Slider healthSlider;
     [SerializeField] private Slider partyometerSlider;
 
     [Header("Retry")]
-    [SerializeField] private string retrySceneName = "nv3";
+    [SerializeField] private string retrySceneName = "nv1";
 
     private Health currentPlayerHealth;
     private InventorySystem currentPlayerInventory;
-    private bool stopMenuOpen;
     private bool gameOverOpen;
     private bool cutsceneLocked;
 
-    public bool IsGameplayLocked => stopMenuOpen || gameOverOpen || cutsceneLocked;
+    public bool IsGameplayLocked => gameOverOpen || cutsceneLocked;
 
     private void Awake()
     {
@@ -48,7 +45,7 @@ public class PermanentHUDManager : MonoBehaviour
     private void Start()
     {
         RefreshSceneBindings();
-        HideStopMenu();
+
         HideGameOver();
         SetCutsceneLock(false);
     }
@@ -59,46 +56,9 @@ public class PermanentHUDManager : MonoBehaviour
         UnbindCurrentPlayer();
     }
 
-    public void ToggleStopMenu()
-    {
-        if (gameOverOpen || cutsceneLocked)
-        {
-            return;
-        }
-
-        if (stopMenuOpen)
-        {
-            HideStopMenu();
-            return;
-        }
-
-        ShowStopMenu();
-    }
-
-    public void ShowStopMenu()
-    {
-        if (gameOverOpen || cutsceneLocked)
-        {
-            return;
-        }
-
-        stopMenuOpen = true;
-        SetMenuVisible(stopMenuRoot, true);
-        ApplyPauseState();
-    }
-
-    public void HideStopMenu()
-    {
-        stopMenuOpen = false;
-        SetMenuVisible(stopMenuRoot, false);
-        ApplyPauseState();
-    }
-
     public void ShowGameOver()
     {
         gameOverOpen = true;
-        stopMenuOpen = false;
-        SetMenuVisible(stopMenuRoot, false);
         SetMenuVisible(gameOverRoot, true);
         ApplyPauseState();
     }
@@ -116,7 +76,9 @@ public class PermanentHUDManager : MonoBehaviour
 
         if (locked)
         {
-            HideStopMenu();
+            Time.timeScale = 0f;
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
         }
         else if (!gameOverOpen)
         {
@@ -139,7 +101,6 @@ public class PermanentHUDManager : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         RefreshSceneBindings();
-        HideStopMenu();
         HideGameOver();
     }
 
@@ -167,11 +128,6 @@ public class PermanentHUDManager : MonoBehaviour
         if (healthRoot != null)
         {
             healthRoot.SetActive(currentPlayerHealth != null);
-        }
-
-        if (inventoryRoot != null)
-        {
-            inventoryRoot.SetActive(currentPlayerInventory != null);
         }
 
         UpdatePartyometerUI();
@@ -205,14 +161,14 @@ public class PermanentHUDManager : MonoBehaviour
 
     private void ApplyPauseState()
     {
-        bool shouldPause = stopMenuOpen || gameOverOpen;
+        bool shouldPause = gameOverOpen || cutsceneLocked;
         Time.timeScale = shouldPause ? 0f : 1f;
         UpdateCursorState();
     }
 
     private void UpdateCursorState()
     {
-        bool shouldShowCursor = stopMenuOpen || gameOverOpen;
+        bool shouldShowCursor = gameOverOpen;
         Cursor.visible = shouldShowCursor;
         Cursor.lockState = shouldShowCursor ? CursorLockMode.None : CursorLockMode.Locked;
     }
@@ -234,5 +190,30 @@ public class PermanentHUDManager : MonoBehaviour
 
         partyometerSlider.maxValue = GameManager.Instance.MaxPartyOMeter;
         partyometerSlider.value = GameManager.Instance.PartyOMeter;
+    }
+
+    public void RetryGame()
+    {
+        Time.timeScale = 1f;
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.ResetRuntimeStateForRetry();
+        }
+
+        SceneManager.LoadScene(string.IsNullOrWhiteSpace(retrySceneName)
+            ? SceneManager.GetActiveScene().name
+            : retrySceneName);
+    }
+
+    public void GoToMainMenu()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("Menu"); // cambia el nombre si tu escena se llama distinto
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }

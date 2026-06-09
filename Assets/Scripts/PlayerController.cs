@@ -24,10 +24,6 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) && PermanentHUDManager.Instance != null)
-        {
-            PermanentHUDManager.Instance.ToggleStopMenu();
-        }
 
         if (PermanentHUDManager.Instance != null && PermanentHUDManager.Instance.IsGameplayLocked)
         {

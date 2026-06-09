@@ -62,11 +62,15 @@ public class NV3FinaleSequence : MonoBehaviour
     public void StartSequence()
     {
         if (sequenceStarted)
-        {
             return;
-        }
 
         sequenceStarted = true;
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.EndCombat(); // 👈 AQUÍ
+        }
+
         StartCoroutine(PlaySequenceRoutine());
     }
 
