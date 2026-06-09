@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+    private const string DDRTutorialSeenKey = "DDRTutorialSeen";
 
     [Header("Persistent Stats")]
     [SerializeField] private float savedPlayerMaxHealth = 100f;
@@ -21,6 +22,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float ddrFailMissThreshold = 0.30f;
     [SerializeField] private float ddrFailHealthPenalty = 20f;
     [SerializeField] private float ddrFailPartyOMeterGain = 15f;
+
+    [Header("DDR Progress")]
+    [SerializeField] private int ddrEntries = 0;
+    [SerializeField] private int maxDDREntriesBeforeDeath = 3;
+
+    public int DDREntries => ddrEntries;
+    public bool IsFirstDDREntry => ddrEntries == 1;
+    public bool HasSeenDDRTutorial => PlayerPrefs.GetInt(DDRTutorialSeenKey, 0) == 1;
+    public bool ShouldShowDDRTutorialOnCurrentEntry => IsFirstDDREntry && !HasSeenDDRTutorial;
 
     [Header("Player Discovery")]
     [SerializeField] private string playerTag = "Player";
@@ -77,6 +87,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void MarkDDRTutorialAsSeen()
+    {
+        if (HasSeenDDRTutorial)
+        {
+            return;
+        }
+
+        PlayerPrefs.SetInt(DDRTutorialSeenKey, 1);
+        PlayerPrefs.Save();
+    }
+
     public void RegisterPlayer(Health playerHealth, InventorySystem playerInventory)
     {
         currentPlayerHealth = playerHealth;
@@ -125,6 +146,17 @@ public class GameManager : MonoBehaviour
 
         if (SceneManager.GetActiveScene().name == ddrSceneName)
         {
+            return;
+        }
+
+        ddrEntries++;
+        if (ddrEntries > maxDDREntriesBeforeDeath)
+        {
+            if (currentPlayerHealth != null)
+            {
+                //Set health to 0 to trigger death
+                currentPlayerHealth.SetCurrentHealth(0f);
+            }
             return;
         }
 

@@ -3,35 +3,40 @@ using UnityEngine;
 
 public class DJGhostBossAttack : MonoBehaviour
 {
+    [Header("Prefabs")]
     [SerializeField] private MusicWaveProjectile regularWavePrefab;
     [SerializeField] private MusicWaveProjectile specialWavePrefab;
+
+    [Header("References")]
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Transform playerTarget;
-    [SerializeField] private float regularWaveCooldown = 2f;
-    [SerializeField] private float specialWaveCooldown = 6f;
+
+    [Header("Attack Timing")]
+    [SerializeField] private float minAttackDelay = 2.5f;
+    [SerializeField] private float maxAttackDelay = 5.5f;
+
+    [Header("Attack Chances")]
+    [Range(0f, 1f)]
+    [SerializeField] private float specialAttackChance = 0.4f;
+
+    [Header("Special Attack")]
     [SerializeField] private float specialWaveSpeedMultiplier = 1.35f;
 
     private Coroutine attackRoutine;
 
     private void OnEnable()
     {
-
-        Debug.Log("DJGhostBossAttack enabled, starting attack loop.");
+        Debug.Log("DJGhostBossAttack enabled.");
 
         if (spawnPoint == null)
-        {
             spawnPoint = transform;
-        }
 
         if (playerTarget == null)
         {
-            Debug.LogWarning("Player target not assigned for DJGhostBossAttack. Attempting to find player by tag.");
-
             GameObject player = GameObject.FindGameObjectWithTag("Player");
+
             if (player != null)
-            {
                 playerTarget = player.transform;
-            }
         }
 
         attackRoutine = StartCoroutine(AttackLoop());
@@ -48,41 +53,57 @@ public class DJGhostBossAttack : MonoBehaviour
 
     private IEnumerator AttackLoop()
     {
-        Debug.Log("Starting DJGhostBoss attack loop.");
-
         while (true)
         {
-            SpawnRegularWave();
-            yield return new WaitForSeconds(regularWaveCooldown);
+            float waitTime = Random.Range(minAttackDelay, maxAttackDelay);
+            yield return new WaitForSeconds(waitTime);
 
-            SpawnSpecialWave();
-            yield return new WaitForSeconds(specialWaveCooldown);
+            PerformRandomAttack();
         }
     }
 
-    private void SpawnRegularWave()
+    private void PerformRandomAttack()
     {
-        Debug.Log("Spawning regular music wave.");
-        
-        if (regularWavePrefab == null || playerTarget == null)
-        {
+        if (playerTarget == null)
             return;
-        }
 
-        MusicWaveProjectile wave = Instantiate(regularWavePrefab, spawnPoint.position, Quaternion.identity);
-        wave.Initialize(playerTarget, false, 1f);
+        bool useSpecial = Random.value < specialAttackChance;
+
+        Vector3 targetPosition = playerTarget.position;
+
+        if (useSpecial)
+        {
+            SpawnSpecialWave(targetPosition);
+        }
+        else
+        {
+            SpawnRegularWave(targetPosition);
+        }
     }
 
-    private void SpawnSpecialWave()
+    private void SpawnRegularWave(Vector3 targetPosition)
     {
-        Debug.Log("Spawning special music wave.");
-
-        if (specialWavePrefab == null || playerTarget == null)
-        {
+        if (regularWavePrefab == null)
             return;
-        }
 
-        MusicWaveProjectile wave = Instantiate(specialWavePrefab, spawnPoint.position, Quaternion.identity);
-        wave.Initialize(playerTarget, true, specialWaveSpeedMultiplier);
+        Debug.Log("Regular Attack");
+
+        MusicWaveProjectile wave =
+            Instantiate(regularWavePrefab, spawnPoint.position, Quaternion.identity);
+
+        wave.Initialize(targetPosition, false, 1f);
+    }
+
+    private void SpawnSpecialWave(Vector3 targetPosition)
+    {
+        if (specialWavePrefab == null)
+            return;
+
+        Debug.Log("Special Attack");
+
+        MusicWaveProjectile wave =
+            Instantiate(specialWavePrefab, spawnPoint.position, Quaternion.identity);
+
+        wave.Initialize(targetPosition, true, specialWaveSpeedMultiplier);
     }
 }
