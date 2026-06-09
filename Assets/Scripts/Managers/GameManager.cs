@@ -74,6 +74,7 @@ public class GameManager : MonoBehaviour
     public float BossHealth => savedBossHealth;
     public float BossMaxHealth => savedBossMaxHealth;
     public float PartyOMeter => partyOMeter;
+    public float MaxPartyOMeter => maxPartyOMeter;
     public bool IsDDRActive => isDDRActive;
 
     private void Awake()
@@ -161,14 +162,29 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void SetPartyOMeter(float value)
+    {
+        partyOMeter = Mathf.Clamp(value, 0f, maxPartyOMeter);
+    }
+
     public void AddPartyOMeter(float amount)
     {
-        partyOMeter = Mathf.Clamp(partyOMeter + amount, 0f, maxPartyOMeter);
+        SetPartyOMeter(partyOMeter + amount);
     }
 
     public void ReducePartyOMeter(float amount)
     {
         AddPartyOMeter(-amount);
+    }
+
+    public void ResetRuntimeStateForRetry()
+    {
+        savedPlayerHealth = savedPlayerMaxHealth;
+        savedBossHealth = savedBossMaxHealth;
+        partyOMeter = maxPartyOMeter;
+        ddrEntries = 0;
+        isDDRActive = false;
+        isTransitioningToDDR = false;
     }
 
     public void StartDDRChallengeFromSpecialWave()
@@ -242,6 +258,16 @@ public class GameManager : MonoBehaviour
 
     private void BindAndApplyPlayerState()
     {
+        if (currentPlayerHealth != null)
+        {
+            currentPlayerHealth.onDied.RemoveListener(HandlePlayerDeath);
+        }
+
+        if (currentBossHealth != null)
+        {
+            currentBossHealth.onDied.RemoveListener(HandleBossDeath);
+        }
+
         currentPlayerHealth = null;
         currentPlayerInventory = null;
         currentBossHealth = null;
@@ -273,10 +299,19 @@ public class GameManager : MonoBehaviour
         {
             CapturePlayerState();
             hasInitializedFromScene = true;
-            return;
         }
 
         ApplyStateToCurrentPlayer();
+
+        if (currentPlayerHealth != null)
+        {
+            currentPlayerHealth.onDied.AddListener(HandlePlayerDeath);
+        }
+
+        if (currentBossHealth != null)
+        {
+            currentBossHealth.onDied.AddListener(HandleBossDeath);
+        }
     }
 
     private void ApplyStateToCurrentPlayer()
@@ -296,6 +331,24 @@ public class GameManager : MonoBehaviour
         {
             currentBossHealth.SetMaxHealth(savedBossMaxHealth, false);
             currentBossHealth.SetCurrentHealth(savedBossHealth);
+        }
+    }
+
+    private void HandlePlayerDeath()
+    {
+        if (PermanentHUDManager.Instance != null)
+        {
+            PermanentHUDManager.Instance.ShowGameOver();
+        }
+    }
+
+    private void HandleBossDeath()
+    {
+        SetPartyOMeter(0f);
+
+        if (PartyometerController.Instance != null)
+        {
+            PartyometerController.Instance.ForceToZero();
         }
     }
 

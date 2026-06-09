@@ -24,6 +24,26 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape) && PermanentHUDManager.Instance != null)
+        {
+            PermanentHUDManager.Instance.ToggleStopMenu();
+        }
+
+        if (PermanentHUDManager.Instance != null && PermanentHUDManager.Instance.IsGameplayLocked)
+        {
+            velocity = Vector3.zero;
+
+            if (animator != null)
+            {
+                animator.SetBool(isInDDRParameterName, GameManager.Instance != null && GameManager.Instance.IsDDRActive);
+                animator.SetFloat("Speed", 0f);
+                animator.SetBool("isSprinting", false);
+                animator.SetBool("IsWalkingBackward", false);
+            }
+
+            return;
+        }
+
         if (GameManager.Instance != null && GameManager.Instance.IsDDRActive)
         {
             velocity = Vector3.zero;
