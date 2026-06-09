@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 [RequireComponent(typeof(AudioSource))]
 public class DDRManager : MonoBehaviour
@@ -28,6 +29,14 @@ public class DDRManager : MonoBehaviour
     [SerializeField] private bool verboseStepLogs = true;
     [SerializeField] private bool showDebugOverlay = true;
 
+    [Header("UI")]
+    [SerializeField] private TMP_Text songNameText;
+    [SerializeField] private TMP_Text scoreText;
+    [SerializeField] private TMP_Text resultText;
+    [SerializeField] private GameObject firstEntryTutorialPanel;
+    [SerializeField] private bool allowKeyboardToCloseTutorial = true;
+    [SerializeField] private KeyCode tutorialContinueKey = KeyCode.Return;
+
     private static readonly KeyCode[] StepKeys =
     {
         KeyCode.LeftArrow,
@@ -51,9 +60,12 @@ public class DDRManager : MonoBehaviour
     private bool finished;
     private bool returningToScene;
     private bool inputCapturedForCurrentStep;
+    private bool waitingForTutorialClose;
+    private bool hasStartedSong;
     private KeyCode capturedKeyForCurrentStep = KeyCode.None;
     private string lastStepDebug = string.Empty;
     private string songStatus = "Loading...";
+    private float cachedTimeScale = 1f;
 
     private void Awake()
     {
@@ -66,16 +78,38 @@ public class DDRManager : MonoBehaviour
     private void Start()
     {
         ActivateDDRCamera();
-        StartCoroutine(BeginRandomSongRoutine());
+
+        if (ShouldShowFirstEntryTutorial())
+        {
+            BeginFirstEntryTutorialGate();
+            return;
+        }
+
+        StartSongIfNeeded();
     }
 
     private void OnDestroy()
     {
+        if (waitingForTutorialClose)
+        {
+            Time.timeScale = cachedTimeScale;
+        }
+
         RestoreCameras();
     }
 
     private void Update()
     {
+        if (waitingForTutorialClose)
+        {
+            if (allowKeyboardToCloseTutorial && Input.GetKeyDown(tutorialContinueKey))
+            {
+                OnTutorialContinuePressed();
+            }
+
+            return;
+        }
+
         if (!started || finished || activeSong == null || activeSong.steps == null)
         {
             return;
@@ -121,6 +155,18 @@ public class DDRManager : MonoBehaviour
         capturedKeyForCurrentStep = KeyCode.None;
         songStatus = $"Ready: {activeSong.songId}";
 
+        if (songNameText != null)
+        {
+            songNameText.text = activeSong.songId;
+        }
+
+        UpdateScoreUI();
+
+        if (resultText != null)
+        {
+            resultText.text = "";
+        }
+
         if (verboseStepLogs)
         {
             Debug.Log($"DDR Song Selected: {activeSong.songId} | BPM: {activeSong.bpm} | Steps: {activeSong.steps.Length}");
@@ -135,6 +181,62 @@ public class DDRManager : MonoBehaviour
         songStatus = $"Playing: {activeSong.songId}";
 
         yield return null;
+    }
+
+    private bool ShouldShowFirstEntryTutorial()
+    {
+        return GameManager.Instance != null && GameManager.Instance.ShouldShowDDRTutorialOnCurrentEntry;
+    }
+
+    private void BeginFirstEntryTutorialGate()
+    {
+        if (firstEntryTutorialPanel == null)
+        {
+            Debug.LogWarning("DDR first-entry tutorial panel is not assigned. Starting song immediately.");
+            StartSongIfNeeded();
+            return;
+        }
+
+        waitingForTutorialClose = true;
+        cachedTimeScale = Time.timeScale;
+        Time.timeScale = 0f;
+        songStatus = "Tutorial";
+        firstEntryTutorialPanel.SetActive(true);
+    }
+
+    private void StartSongIfNeeded()
+    {
+        if (hasStartedSong)
+        {
+            return;
+        }
+
+        hasStartedSong = true;
+        StartCoroutine(BeginRandomSongRoutine());
+    }
+
+    public void OnTutorialContinuePressed()
+    {
+        if (!waitingForTutorialClose)
+        {
+            return;
+        }
+
+        waitingForTutorialClose = false;
+
+        if (firstEntryTutorialPanel != null)
+        {
+            firstEntryTutorialPanel.SetActive(false);
+        }
+
+        Time.timeScale = cachedTimeScale;
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.MarkDDRTutorialAsSeen();
+        }
+
+        StartSongIfNeeded();
     }
 
     private void RunStepTimeline()
@@ -239,7 +341,11 @@ public class DDRManager : MonoBehaviour
 
     private void RegisterHit(int animationValue)
     {
-        totalHits += 1;
+        totalHits++;
+
+        UpdateScoreUI();
+        ShowResult("HIT");
+
         if (playerAnimator != null)
         {
             string danceTriggerName = $"{danceTriggerPrefix}{animationValue}";
@@ -255,6 +361,8 @@ public class DDRManager : MonoBehaviour
     private void RegisterMiss()
     {
         totalMisses += 1;
+        UpdateScoreUI();
+        ShowResult("MISS");
         if (playerAnimator != null)
         {
             playerAnimator.SetTrigger(missTriggerName);
@@ -265,6 +373,8 @@ public class DDRManager : MonoBehaviour
             }
         }
     }
+
+    private Coroutine resultRoutine;
 
     private void FinishSong()
     {
@@ -363,7 +473,39 @@ public class DDRManager : MonoBehaviour
         }
     }
 
-    private void OnGUI()
+    private void UpdateScoreUI()
+    {
+        if (scoreText == null)
+            return;
+
+        int totalSteps = activeSong != null ? activeSong.steps.Length : 0;
+
+        scoreText.text = $"{totalHits}/{totalSteps}";
+    }
+
+    private void ShowResult(string result)
+    {
+        if (resultText == null)
+            return;
+
+        if (resultRoutine != null)
+        {
+            StopCoroutine(resultRoutine);
+        }
+
+        resultRoutine = StartCoroutine(ShowResultRoutine(result));
+    }
+
+    private IEnumerator ShowResultRoutine(string result)
+    {
+        resultText.text = result;
+
+        yield return new WaitForSeconds(0.6f);
+
+        resultText.text = "";
+    }
+
+/*     private void OnGUI()
     {
         if (!showDebugOverlay)
         {
@@ -409,12 +551,13 @@ public class DDRManager : MonoBehaviour
 
         GUILayout.Label($"Last Step: {lastStepDebug}");
         GUILayout.EndArea();
-    }
+    }*/
+
     public bool HasActiveSong => started && !finished && activeSong != null && activeSong.steps != null;
     public int CurrentStepIndex => currentStepIndex;
     public int TotalSteps => activeSong != null && activeSong.steps != null ? activeSong.steps.Length : 0;
     public string CurrentStepKey => HasActiveSong && currentStepIndex < activeSong.steps.Length ? activeSong.steps[currentStepIndex].key : string.Empty;
-     public string CurrentStepDanceTriggerName => HasActiveSong && currentStepIndex < activeSong.steps.Length ? $"{danceTriggerPrefix}{activeSong.steps[currentStepIndex].animationValue}" : string.Empty;
+    public string CurrentStepDanceTriggerName => HasActiveSong && currentStepIndex < activeSong.steps.Length ? $"{danceTriggerPrefix}{activeSong.steps[currentStepIndex].animationValue}" : string.Empty;
 
     public bool IsPreviewPhase
     {
@@ -484,4 +627,6 @@ public class DDRManager : MonoBehaviour
             return Mathf.Clamp01(CurrentStepElapsedSeconds / safePreviewDuration);
         }
     }
+
+    
 }
