@@ -11,6 +11,9 @@ public class PermanentHUDManager : MonoBehaviour
     [SerializeField] private GameObject gameOverRoot;
     [SerializeField] private GameObject healthRoot;
 
+    [SerializeField] private GameObject partyometerRoot;
+    [SerializeField] private GameObject bottleCounterRoot;
+
     [Header("Bars")]
     [SerializeField] private Slider healthSlider;
     [SerializeField] private Slider partyometerSlider;
@@ -59,14 +62,26 @@ public class PermanentHUDManager : MonoBehaviour
     public void ShowGameOver()
     {
         gameOverOpen = true;
+
+        SetMenuVisible(healthRoot, false);
+        SetMenuVisible(partyometerRoot, false);
+        SetMenuVisible(bottleCounterRoot, false);
+
         SetMenuVisible(gameOverRoot, true);
+
         ApplyPauseState();
     }
 
     public void HideGameOver()
     {
         gameOverOpen = false;
+
+        SetMenuVisible(healthRoot, true);
+        SetMenuVisible(partyometerRoot, true);
+        SetMenuVisible(bottleCounterRoot, true);
+
         SetMenuVisible(gameOverRoot, false);
+
         ApplyPauseState();
     }
 
@@ -98,10 +113,15 @@ public class PermanentHUDManager : MonoBehaviour
         SceneManager.LoadScene(string.IsNullOrWhiteSpace(retrySceneName) ? SceneManager.GetActiveScene().name : retrySceneName);
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+   private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         RefreshSceneBindings();
         HideGameOver();
+
+        gameOverOpen = false;
+        cutsceneLocked = false;
+
+        Time.timeScale = 1f;
     }
 
     private void RefreshSceneBindings()
@@ -205,11 +225,26 @@ public class PermanentHUDManager : MonoBehaviour
             ? SceneManager.GetActiveScene().name
             : retrySceneName);
     }
-
+    
     public void GoToMainMenu()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("Menu"); // cambia el nombre si tu escena se llama distinto
+
+        gameOverOpen = false;
+
+        healthRoot.SetActive(false);
+        partyometerRoot.SetActive(false);
+        bottleCounterRoot.SetActive(false);
+        hudRoot.SetActive(false);
+        gameOverRoot.SetActive(false);
+
+        SceneManager.LoadScene("Menu");
+    }
+
+    private void ForceCursorUnlocked()
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     public void QuitGame()

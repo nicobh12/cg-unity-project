@@ -121,10 +121,19 @@ public class GameManager : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!isTransitioningToDDR && SceneManager.GetActiveScene().name != ddrSceneName)
-        {
-            CapturePlayerState();
-        }
+        if (isTransitioningToDDR)
+            return;
+
+        if (currentPlayerHealth == null)
+            return;
+
+        if (currentPlayerHealth.IsDead)
+            return;
+
+        if (SceneManager.GetActiveScene().name == ddrSceneName)
+            return;
+
+        CapturePlayerState();
     }
 
     public void MarkDDRTutorialAsSeen()
@@ -193,9 +202,18 @@ public class GameManager : MonoBehaviour
         savedPlayerHealth = savedPlayerMaxHealth;
         savedBossHealth = savedBossMaxHealth;
         partyOMeter = maxPartyOMeter;
+
         ddrEntries = 0;
         isDDRActive = false;
         isTransitioningToDDR = false;
+
+        CombatEnded = false;
+
+        if (currentPlayerHealth != null)
+        {
+            currentPlayerHealth.SetMaxHealth(savedPlayerMaxHealth, true);
+            currentPlayerHealth.SetCurrentHealth(savedPlayerMaxHealth);
+        }
     }
 
     public void StartDDRChallengeFromSpecialWave()
@@ -366,6 +384,8 @@ public class GameManager : MonoBehaviour
         {
             PermanentHUDManager.Instance.ShowGameOver();
         }
+
+        CombatEnded = true;
     }
 
     private void HandleBossDeath()
