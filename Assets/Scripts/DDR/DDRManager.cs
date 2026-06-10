@@ -195,7 +195,7 @@ public class DDRManager : MonoBehaviour
 
     private bool ShouldShowFirstEntryTutorial()
     {
-        return GameManager.Instance != null && GameManager.Instance.ShouldShowDDRTutorialOnCurrentEntry;
+        return false;
     }
 
     private void BeginFirstEntryTutorialGate()
