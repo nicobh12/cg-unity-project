@@ -14,4 +14,20 @@ public class principalMenu : MonoBehaviour
         Debug.Log("Botón Quit funcionando");
         Application.Quit();
     }
+
+    private void Start()
+    {
+        ForceCursor();
+    }
+
+    private void Update()
+    {
+        ForceCursor();
+    }
+
+    private void ForceCursor()
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
 }
